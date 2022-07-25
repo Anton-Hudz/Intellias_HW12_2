@@ -19,15 +19,17 @@ func main() {
 	}
 
 	// Ваша реалізація
-	// на основании кода из первого задания:
+	// при помощи каналов и на основании предыдущего кода:
 	var wg sync.WaitGroup
 	result := 0
+	ch := make(chan int)
 	for i := 0; i < len(n); i++ {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			result += sum(n[i])
+			ch <- sum(n[i])
 		}(i)
+		result += <-ch
 	}
 	wg.Wait()
 	fmt.Println("result:", result)
