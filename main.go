@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"time"
+	// "time"
 )
 
 // Конкурентно порахувати суму усіх слайсів int, та роздрукувати результат.
@@ -31,11 +31,9 @@ func main() {
 		}(i)
 	}
 	for i := 0; i < len(n); i++ {
-		go func(ch chan int) {
-			result += <-ch
-		}(ch)
+		result += <-ch
+
 	}
-	time.Sleep(time.Second)
 	fmt.Println("result:", result)
 }
 
