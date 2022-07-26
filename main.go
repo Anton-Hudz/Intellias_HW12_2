@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	"time"
 )
 
 // Конкурентно порахувати суму усіх слайсів int, та роздрукувати результат.
@@ -20,18 +20,22 @@ func main() {
 
 	// Ваша реалізація
 	// при помощи каналов и на основании предыдущего кода:
-	var wg sync.WaitGroup
+	// + убрал WG
+	// + добавил горутину для конкурентной калькуляции
+
 	result := 0
 	ch := make(chan int)
 	for i := 0; i < len(n); i++ {
-		wg.Add(1)
 		go func(i int) {
-			defer wg.Done()
 			ch <- sum(n[i])
 		}(i)
-		result += <-ch
 	}
-	wg.Wait()
+	for i := 0; i < len(n); i++ {
+		go func(ch chan int) {
+			result += <-ch
+		}(ch)
+	}
+	time.Sleep(time.Second)
 	fmt.Println("result:", result)
 }
 
